@@ -79,7 +79,7 @@ RegressionPoliceReports-PP0030/
 - **Preprocesamiento:** StandardScaler (normalización de features)
 - **Validación:** Split temporal (últimos 6 meses como test set)
 - **Métricas:** RMSE, MAE, R²
-
+ 
 
 ## 📈 Próximos Pasos
 
