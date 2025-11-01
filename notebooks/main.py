@@ -23,6 +23,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import joblib
+from procesamiento import evaluar_modelos_cv
 
 # Importar módulos propios
 from entrada import load_data
@@ -279,14 +280,19 @@ def main():
     print("\n📊 PASO 3/5: CREACIÓN DE PANEL Y FEATURES")
     panel = make_panel(df_den_clean, df_eje_clean)
     df_features = create_features(panel)
+    resultados = evaluar_modelos_cv(df_features)
     
     # PASO 4: SALIDA - Entrenar y evaluar modelo
     print("\n🤖 PASO 4/5: ENTRENAMIENTO Y EVALUACIÓN")
-    pipeline = train_and_evaluate(df_features)
-    
-    # PASO 5: Guardar modelo
-    print("\n💾 PASO 5/5: GUARDADO DE RESULTADOS")
-    save_model(pipeline)
+    # En esta etapa estaría quedando pendiente la selección del mejor modelo según el paso 3
+    # y la evaluación final con el 20% restante de los datos
+
+    print("\n📊 Resultados de CV promedio por modelo:")
+    cv_df = resultados["cv_results"]
+    # Mostrar tabla resumida
+    print(tabulate(cv_df.values, headers=cv_df.columns, tablefmt="fancy_grid"))
+
+    print("\nℹ️ Se han entrenado pipelines finales sobre el 80% para cada modelo y el conjunto de test (20%) queda disponible en el dict de resultados para evaluación posterior.")
     
     print("\n" + "="*80)
     print(" "*30 + "✅ PIPELINE COMPLETADO")
@@ -294,7 +300,7 @@ def main():
     print(f"\n📂 Archivos generados:")
     print(f"   • data/processed/denuncias_clean.csv")
     print(f"   • data/processed/ejecucion_clean.csv")
-    print(f"   • models/ridge_baseline.joblib")
+    # Nota: el guardado del mejor modelo queda para la etapa 4 (salida)
     print("\n📸 Captura las tablas para tu informe con Windows + Shift + S")
     print("="*80)
 
