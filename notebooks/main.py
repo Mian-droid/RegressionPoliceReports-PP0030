@@ -28,7 +28,7 @@ from procesamiento import evaluar_modelos_cv
 # Importar módulos propios
 from entrada import load_data
 from preprocesamiento import clean_denuncias, clean_ejecucion, generate_cleaning_report, save_clean_data
-
+from salida import evaluar_modelo_elegido
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = ROOT / "models"
@@ -137,7 +137,7 @@ def create_features(df, lags=(1, 2, 3)):
 # SALIDA: Entrenamiento y Evaluación
 # (TODO: Modularizar en salida.py)
 # ==============================================================================
-
+'''
 def train_and_evaluate(df):
     """
     Entrena modelo Ridge con validación temporal.
@@ -227,8 +227,8 @@ def train_and_evaluate(df):
     print(f"\n✅ Mejor alpha (Ridge): {ridge.alpha_:.4f}")
     
     return pipeline
-
-
+'''
+'''
 def save_model(pipeline, model_name="ridge_baseline.joblib"):
     """
     Guarda el modelo entrenado.
@@ -240,7 +240,7 @@ def save_model(pipeline, model_name="ridge_baseline.joblib"):
     model_path = MODELS_DIR / model_name
     joblib.dump(pipeline, model_path)
     print(f"\n💾 Modelo guardado en: {model_path}")
-
+'''
 
 # ==============================================================================
 # FUNCIÓN PRINCIPAL
@@ -280,12 +280,8 @@ def main():
     print("\n📊 PASO 3/5: CREACIÓN DE PANEL Y FEATURES")
     panel = make_panel(df_den_clean, df_eje_clean)
     df_features = create_features(panel)
+    print("\n\n")
     resultados = evaluar_modelos_cv(df_features)
-    
-    # PASO 4: SALIDA - Entrenar y evaluar modelo
-    print("\n🤖 PASO 4/5: ENTRENAMIENTO Y EVALUACIÓN")
-    # En esta etapa estaría quedando pendiente la selección del mejor modelo según el paso 3
-    # y la evaluación final con el 20% restante de los datos
 
     print("\n📊 Resultados de CV promedio por modelo:")
     cv_df = resultados["cv_results"]
@@ -294,6 +290,11 @@ def main():
 
     print("\nℹ️ Se han entrenado pipelines finales sobre el 80% para cada modelo y el conjunto de test (20%) queda disponible en el dict de resultados para evaluación posterior.")
     
+    # PASO 4: SALIDA - Entrenar y evaluar modelo
+    print("\n🤖 PASO 4/5: ENTRENAMIENTO Y EVALUACIÓN")
+    # Selecciona el mejor modelo y lo evalúa en base a y_test
+    evaluar_modelo_elegido(resultados)
+
     print("\n" + "="*80)
     print(" "*30 + "✅ PIPELINE COMPLETADO")
     print("="*80)
