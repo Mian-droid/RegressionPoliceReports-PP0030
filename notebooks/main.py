@@ -28,7 +28,7 @@ from procesamiento import evaluar_modelos_cv
 # Importar módulos propios
 from entrada import load_data
 from preprocesamiento import clean_denuncias, clean_ejecucion, generate_cleaning_report, save_clean_data
-from salida import evaluar_modelo_elegido
+from salida import evaluar_modelo_elegido, plot_residue_vs_prediction, plot_residue_acf, plot_residue_distribution
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = ROOT / "models"
@@ -293,7 +293,7 @@ def main():
     # PASO 4: SALIDA - Entrenar y evaluar modelo
     print("\n🤖 PASO 4/5: ENTRENAMIENTO Y EVALUACIÓN")
     # Selecciona el mejor modelo y lo evalúa en base a y_test
-    evaluar_modelo_elegido(resultados)
+    evaluar_modelo_elegido(resultados)  
 
     print("\n" + "="*80)
     print(" "*30 + "✅ PIPELINE COMPLETADO")
