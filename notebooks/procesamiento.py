@@ -128,7 +128,7 @@ def evaluar_modelos_cv(
     mejor_lineal = cv_df[cv_df['model'].isin(['Ridge', 'Lasso', 'ElasticNet'])].iloc[0]["model"]
     pipeline_lineal = trained_pipelines[mejor_lineal]
     
-    print(f"\n\n📊 COEFICIENTES DEL MEJOR MODELO LINEAL ({mejor_lineal}):")
+    print(f"\n\nCOEFICIENTES DEL MEJOR MODELO LINEAL ({mejor_lineal}):")
     # Intentar obtener el estimador del pipeline
     estimator = pipeline_lineal.named_steps.get('est')
 

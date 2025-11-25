@@ -59,7 +59,7 @@ def clean_denuncias(df: pd.DataFrame) -> pd.DataFrame:
     steps.append(["2. Departamentos inválidos", current_rows, len(df), eliminated, f"{eliminated/current_rows*100:.2f}%"])
     current_rows = len(df)
     
-    # 4. ⚠️ ALINEACIÓN TEMPORAL: Filtrar datos < 2019-01-01
+    # 4. ALINEACIÓN TEMPORAL: Filtrar datos < 2019-01-01
     # Justificación: Dataset de ejecución presupuestal inicia en 2019
     df = df[df["period"] >= "2019-01-01"]
     eliminated = current_rows - len(df)
@@ -84,13 +84,13 @@ def clean_denuncias(df: pd.DataFrame) -> pd.DataFrame:
     current_rows = len(df)
     
     # Mostrar tabla de pasos
-    print(f"\n📊 Proceso de limpieza paso a paso:")
+    print(f"\nProceso de limpieza paso a paso:")
     print(tabulate(steps, 
                    headers=["Paso", "Antes", "Después", "Eliminados", "% Elim."], 
                    tablefmt="fancy_grid"))
     
     # Resumen final
-    print(f"\n✅ Resumen:")
+    print(f"\nResumen:")
     print(f"   • Registros iniciales:      {initial_rows:>10,}")
     print(f"   • Registros finales:        {len(df):>10,}")
     print(f"   • Total eliminados:         {initial_rows - len(df):>10,} ({(1-len(df)/initial_rows)*100:.2f}%)")
@@ -116,7 +116,7 @@ def clean_ejecucion(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame limpio
     """
     print("\n" + "="*80)
-    print(" "*22 + "🧹 LIMPIEZA: EJECUCIÓN PRESUPUESTAL PP0030")
+    print(" "*22 + "LIMPIEZA: EJECUCIÓN PRESUPUESTAL PP0030")
     print("="*80)
     
     initial_rows = len(df)
@@ -168,14 +168,14 @@ def clean_ejecucion(df: pd.DataFrame) -> pd.DataFrame:
     df = df.groupby(["DEPARTAMENTO", "period"], as_index=False)["MONTO_DEVENGADO"].sum()
     
     # Mostrar tabla de pasos
-    print(f"\n📊 Proceso de limpieza paso a paso:")
+    print(f"\nProceso de limpieza paso a paso:")
     print(tabulate(steps, 
                    headers=["Paso", "Antes", "Después", "Eliminados", "% Elim."], 
                    tablefmt="fancy_grid"))
     
     # Tabla de análisis de montos negativos
     if neg_count > 0:
-        print(f"\n💸 Análisis de Montos Negativos (Reversiones Presupuestales):")
+        print(f"\nAnálisis de Montos Negativos (Reversiones Presupuestales):")
         neg_analysis = [
             ["Registros con montos negativos", f"{neg_count:,}", f"{neg_count/initial_rows*100:.2f}%"],
             ["Total en reversiones", f"S/ {neg_monto:,.2f}", ""],
@@ -184,7 +184,7 @@ def clean_ejecucion(df: pd.DataFrame) -> pd.DataFrame:
         print(tabulate(neg_analysis, headers=["Descripción", "Valor", "Observación"], tablefmt="fancy_grid"))
     
     # Resumen final
-    print(f"\n✅ Resumen:")
+    print(f"\nResumen:")
     print(f"   • Registros iniciales:      {initial_rows:>10,}")
     print(f"   • Registros finales:        {len(df):>10,}")
     print(f"   • Total eliminados:         {initial_rows - len(df):>10,} ({(1-len(df)/initial_rows)*100:.2f}%)")
@@ -207,11 +207,11 @@ def generate_cleaning_report(df_den_raw: pd.DataFrame, df_eje_raw: pd.DataFrame,
         df_eje_clean: DataFrame de ejecución después de limpieza
     """
     print("\n" + "="*80)
-    print(" "*25 + "📋 REPORTE DE CALIDAD DE DATOS")
+    print(" "*25 + "REPORTE DE CALIDAD DE DATOS")
     print("="*80)
     
     # Tabla 1: Resumen general
-    print("\n📊 1. RESUMEN GENERAL DE LIMPIEZA")
+    print("\n1. RESUMEN GENERAL DE LIMPIEZA")
     summary_data = [
         ["Denuncias Policiales", 
          f"{len(df_den_raw):,}", 
@@ -229,7 +229,7 @@ def generate_cleaning_report(df_den_raw: pd.DataFrame, df_eje_raw: pd.DataFrame,
                    tablefmt="fancy_grid"))
     
     # Tabla 2: Estadísticas descriptivas
-    print("\n📊 2. ESTADÍSTICAS DESCRIPTIVAS (DESPUÉS DE LIMPIEZA)")
+    print("\n2. ESTADÍSTICAS DESCRIPTIVAS (DESPUÉS DE LIMPIEZA)")
     stats_data = [
         ["Denuncias", 
          f"{df_den_clean['CANTIDAD'].mean():.2f}",
@@ -249,7 +249,7 @@ def generate_cleaning_report(df_den_raw: pd.DataFrame, df_eje_raw: pd.DataFrame,
                    tablefmt="fancy_grid"))
     
     # Tabla 3: Cobertura geográfica
-    print("\n📊 3. COBERTURA GEOGRÁFICA")
+    print("\n3. COBERTURA GEOGRÁFICA")
     geo_data = [
         ["Denuncias", 
          f"{df_den_clean['DEPARTAMENTO'].nunique()}",
@@ -263,7 +263,7 @@ def generate_cleaning_report(df_den_raw: pd.DataFrame, df_eje_raw: pd.DataFrame,
                    tablefmt="fancy_grid"))
     
     # Tabla 4: Alineación temporal
-    print("\n📊 4. ALINEACIÓN TEMPORAL")
+    print("\n4. ALINEACIÓN TEMPORAL")
     temporal_data = [
         ["Denuncias (Original)", 
          str(df_den_raw['period'].min().date()),
@@ -283,7 +283,7 @@ def generate_cleaning_report(df_den_raw: pd.DataFrame, df_eje_raw: pd.DataFrame,
                    tablefmt="fancy_grid"))
     
     print("\n" + "="*80)
-    print("✅ Reporte de calidad generado exitosamente")
+    print("Reporte de calidad generado exitosamente")
     print("="*80)
 
 
@@ -308,7 +308,7 @@ def save_clean_data(df_den: pd.DataFrame, df_eje: pd.DataFrame,
     df_den.to_csv(den_file, index=False, encoding="utf-8-sig")
     df_eje.to_csv(eje_file, index=False, encoding="utf-8-sig")
     
-    print(f"\n💾 Datos limpios guardados:")
+    print(f"\nDatos limpios guardados:")
     print(f"   • {den_file}")
     print(f"   • {eje_file}")
 
@@ -317,7 +317,7 @@ if __name__ == "__main__":
     # Prueba del módulo
     from entrada import load_data
     
-    print("🧪 PRUEBA DEL MÓDULO DE PREPROCESAMIENTO")
+    print("PRUEBA DEL MÓDULO DE PREPROCESAMIENTO")
     
     # Cargar datos
     df_den_raw, df_eje_raw = load_data("../data/raw")

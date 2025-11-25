@@ -2,8 +2,7 @@
 Reporte de Calidad de Datos - Análisis Detallado
 Para el proyecto académico: Regresión Denuncias Policiales vs Ejecución Presupuestal
 
-Este script genera un análisis completo de la calidad de los datos ANTES de la limpieza,
-identificando problemas específicos que deben ser documentados en el informe académico.
+Este script genera un análisis completo de la calidad de los datos ANTES de la limpieza.
 """
 
 import pandas as pd
@@ -53,7 +52,7 @@ def analyze_completeness(df, name):
     print(f"Celdas vacías: {missing:,}")
     print(f"Completitud: {completeness:.2f}%")
     
-    print("\n📊 Valores faltantes por columna:")
+    print("\nValores faltantes por columna:")
     missing_cols = df.isnull().sum()
     missing_pct = (missing_cols / len(df)) * 100
     
@@ -124,10 +123,10 @@ def analyze_denuncias_specific(df):
         # Detectar MES == 0 (problemas)
         mes_zero = (df_work['MES_NUM'] == 0).sum()
         if mes_zero > 0:
-            print(f"⚠️  Registros con MES=0: {mes_zero:,} (deben ser filtrados)")
+            print(f"Registros con MES=0: {mes_zero:,} (deben ser filtrados)")
         
         # Distribución temporal
-        print("\n📅 Registros por año:")
+        print("\nRegistros por año:")
         year_dist = df_work['ANIO_NUM'].value_counts().sort_index()
         for year, count in year_dist.items():
             if not pd.isna(year):
@@ -149,10 +148,10 @@ def analyze_denuncias_specific(df):
         # Detectar departamentos con nombres raros
         invalid = df_work[df_work[dept_col].str.len() < 3][dept_col].value_counts()
         if len(invalid) > 0:
-            print(f"⚠️  Departamentos con nombres sospechosos (< 3 chars): {len(invalid)}")
+            print(f"Departamentos con nombres sospechosos (< 3 chars): {len(invalid)}")
         
         # Top departamentos
-        print("\n🏆 Top 10 departamentos con más denuncias:")
+        print("\nTop 10 departamentos con más denuncias:")
         top_depts = df_work[dept_col].value_counts().head(10)
         for dept, count in top_depts.items():
             print(f"  {dept:<20}: {count:>8,}")
@@ -174,7 +173,7 @@ def analyze_denuncias_specific(df):
         # Valores negativos
         negativos = (df_work['CANTIDAD_NUM'] < 0).sum()
         if negativos > 0:
-            print(f"⚠️  Cantidades negativas: {negativos:,} (deben ser eliminadas)")
+            print(f"  Cantidades negativas: {negativos:,} (deben ser eliminadas)")
         
         # Outliers (método IQR)
         Q1 = df_work['CANTIDAD_NUM'].quantile(0.25)
@@ -182,7 +181,7 @@ def analyze_denuncias_specific(df):
         IQR = Q3 - Q1
         outliers = ((df_work['CANTIDAD_NUM'] < (Q1 - 3 * IQR)) | 
                    (df_work['CANTIDAD_NUM'] > (Q3 + 3 * IQR))).sum()
-        print(f"⚠️  Outliers extremos (3*IQR): {outliers:,} ({outliers/len(df)*100:.2f}%)")
+        print(f"  Outliers extremos (3*IQR): {outliers:,} ({outliers/len(df)*100:.2f}%)")
 
 
 def analyze_ejecucion_specific(df):
@@ -208,9 +207,9 @@ def analyze_ejecucion_specific(df):
         
         mes_zero = (df_work['MES_NUM'] == 0).sum()
         if mes_zero > 0:
-            print(f"⚠️  Registros con MES=0: {mes_zero:,}")
+            print(f"  Registros con MES=0: {mes_zero:,}")
         
-        print("\n📅 Registros por año:")
+        print("\n Registros por año:")
         year_dist = df_work['ANIO_NUM'].value_counts().sort_index()
         for year, count in year_dist.items():
             if not pd.isna(year):
@@ -224,7 +223,7 @@ def analyze_ejecucion_specific(df):
         depts = df_work[dept_col].dropna().unique()
         print(f"Departamentos únicos: {len(depts)}")
         
-        print("\n🏆 Top 10 departamentos con más registros:")
+        print("\n Top 10 departamentos con más registros:")
         top_depts = df_work[dept_col].value_counts().head(10)
         for dept, count in top_depts.items():
             print(f"  {dept:<20}: {count:>8,}")
@@ -248,7 +247,7 @@ def analyze_ejecucion_specific(df):
         # Montos negativos (reversiones)
         negativos = (df_work['MONTO_NUM'] < 0).sum()
         monto_neg = df_work[df_work['MONTO_NUM'] < 0]['MONTO_NUM'].sum()
-        print(f"\n💸 Montos negativos (reversiones): {negativos:,} registros")
+        print(f"\nMontos negativos (reversiones): {negativos:,} registros")
         print(f"   Total reversiones: S/ {monto_neg:,.2f}")
         print(f"   Nota: Las reversiones son correcciones presupuestales legítimas")
         
@@ -256,7 +255,7 @@ def analyze_ejecucion_specific(df):
         Q3 = df_work['MONTO_NUM'].quantile(0.75)
         IQR = Q3 - df_work['MONTO_NUM'].quantile(0.25)
         high_outliers = (df_work['MONTO_NUM'] > (Q3 + 3 * IQR)).sum()
-        print(f"⚠️  Outliers altos (>3*IQR): {high_outliers:,} ({high_outliers/len(df)*100:.2f}%)")
+        print(f"Outliers altos (>3*IQR): {high_outliers:,} ({high_outliers/len(df)*100:.2f}%)")
 
 
 def generate_summary_report(den_stats, ejec_stats):
@@ -265,7 +264,7 @@ def generate_summary_report(den_stats, ejec_stats):
     print("RESUMEN EJECUTIVO - CALIDAD DE DATOS")
     print('='*60)
     
-    print("\n📋 RECOMENDACIONES DE LIMPIEZA:")
+    print("\nRECOMENDACIONES DE LIMPIEZA:")
     print("\nDENUNCIAS POLICIALES:")
     print("  ✓ Eliminar registros con MES=0")
     print("  ✓ Filtrar departamentos con nombres < 3 caracteres")
@@ -288,7 +287,7 @@ def generate_summary_report(den_stats, ejec_stats):
     print("  ✓ Crear panel balanceado con índice temporal completo")
     print("  ✓ Rellenar gaps con forward-fill o 0 según corresponda")
     
-    print("\n📊 FEATURES SUGERIDOS:")
+    print("\nFEATURES SUGERIDOS:")
     print("  ✓ Lags de ejecución presupuestal (1, 2, 3 meses)")
     print("  ✓ Variables temporales (mes, año)")
     print("  ✓ Target: log1p(cantidad_denuncias) para estabilizar varianza")
@@ -302,24 +301,24 @@ def main():
     print("="*80)
     
     # 1. Cargar datasets
-    print("\n📂 PASO 1: CARGA DE DATOS")
+    print("\nPASO 1: CARGA DE DATOS")
     den = load_raw_data(DENUNCIAS_F, "Denuncias Policiales")
     ejec = load_raw_data(EJEC_F, "Ejecución Presupuestal")
     
     # 2. Análisis de completitud
-    print("\n📊 PASO 2: ANÁLISIS DE COMPLETITUD")
+    print("\nPASO 2: ANÁLISIS DE COMPLETITUD")
     den_missing = analyze_completeness(den, "Denuncias")
     ejec_missing = analyze_completeness(ejec, "Ejecución")
     
     # 3. Análisis de duplicados
-    print("\n🔍 PASO 3: ANÁLISIS DE DUPLICADOS")
+    print("\nPASO 3: ANÁLISIS DE DUPLICADOS")
     den_dupes = analyze_duplicates(den, "Denuncias", 
                                    key_columns=['ANIO', 'MES'] if 'ANIO' in den.columns else None)
     ejec_dupes = analyze_duplicates(ejec, "Ejecución",
                                     key_columns=['ANO_EJE', 'MES_EJE'] if 'ANO_EJE' in ejec.columns else None)
     
     # 4. Análisis de tipos de datos
-    print("\n🔤 PASO 4: ANÁLISIS DE TIPOS DE DATOS")
+    print("\nPASO 4: ANÁLISIS DE TIPOS DE DATOS")
     den_types = analyze_data_types(den, "Denuncias")
     ejec_types = analyze_data_types(ejec, "Ejecución")
     
@@ -334,9 +333,9 @@ def main():
     )
     
     print("\n" + "="*80)
-    print("✅ ANÁLISIS DE CALIDAD COMPLETADO")
+    print("ANÁLISIS DE CALIDAD COMPLETADO")
     print("="*80)
-    print("\n💡 Próximo paso: Ejecutar 'exploratory_regression.py' para limpieza y modelado")
+    print("\nPróximo paso: Ejecutar 'exploratory_regression.py' para limpieza y modelado")
 
 
 if __name__ == '__main__':

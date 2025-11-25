@@ -22,7 +22,7 @@ def evaluar_modelo_elegido(resultados):
     # ----------------------------------------------------
     # PASO 1: MÉTRICAS DE DESEMPEÑO
     # ----------------------------------------------------
-    print("\n\n📊 MÉTRICAS DE DESEMPEÑO FINAL (Test Set):")
+    print("\n\n MÉTRICAS DE DESEMPEÑO FINAL (Test Set):")
     print(f"Mean squared error (MSE): {mean_squared_error(y_test, y_predicted):.4f}")
     print(f"Mean absolute error (MAE): {mean_absolute_error(y_test, y_predicted):.4f}")
     print(f"R2 score: {r2_score(y_test, y_predicted):.4f}")
@@ -42,7 +42,7 @@ def evaluar_modelo_elegido(resultados):
     ax.grid(True, linestyle=':', alpha=0.6)
     plt.show() 
 
-    print("\n📊 Generando Gráficos de Validación Adicionales...")
+    print("\nGráficos de Validación Adicionales:")
     
     # ----------------------------------------------------
     # PASO 3: GRÁFICOS DE RESIDUALES

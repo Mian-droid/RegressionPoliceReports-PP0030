@@ -35,7 +35,7 @@ def read_denuncias(filepath: str) -> pd.DataFrame:
     4. Agrega por (ANIO, MES, DEPARTAMENTO)
     """
     print("\n" + "="*80)
-    print(" "*30 + "📥 ENTRADA: DENUNCIAS POLICIALES")
+    print(" "*30 + "ENTRADA: DENUNCIAS POLICIALES")
     print("="*80)
     
     # 1. Lectura con múltiples encodings
@@ -45,13 +45,13 @@ def read_denuncias(filepath: str) -> pd.DataFrame:
     for enc in encodings:
         try:
             df = pd.read_csv(filepath, encoding=enc, low_memory=False)
-            print(f"✅ Archivo leído exitosamente con encoding: {enc}")
+            print(f"Archivo leído exitosamente con encoding: {enc}")
             break
         except Exception as e:
             continue
     
     if df is None:
-        raise ValueError(f"❌ No se pudo leer el archivo con ningún encoding probado: {encodings}")
+        raise ValueError(f"No se pudo leer el archivo con ningún encoding probado: {encodings}")
     
     print(f"   • Filas leídas: {len(df):,}")
     print(f"   • Columnas: {list(df.columns)}")
@@ -66,7 +66,7 @@ def read_denuncias(filepath: str) -> pd.DataFrame:
     qty_col = next((c for c in df.columns if "CANTIDAD" in c or "TOTAL" in c), None)
     
     if not all([year_col, month_col, dept_col, qty_col]):
-        raise ValueError(f"❌ No se encontraron todas las columnas necesarias en denuncias")
+        raise ValueError(f"No se encontraron todas las columnas necesarias en denuncias")
     
     print(f"   • Columnas detectadas: AÑO={year_col}, MES={month_col}, DPTO={dept_col}, CANT={qty_col}")
     
@@ -118,7 +118,7 @@ def read_ejecucion(filepath: str) -> pd.DataFrame:
     5. Agrega por (ANIO, MES, DEPARTAMENTO)
     """
     print("\n" + "="*80)
-    print(" "*25 + "📥 ENTRADA: EJECUCIÓN PRESUPUESTAL PP0030")
+    print(" "*25 + "ENTRADA: EJECUCIÓN PRESUPUESTAL PP0030")
     print("="*80)
     
     # 1. Lectura con múltiples encodings
@@ -128,13 +128,13 @@ def read_ejecucion(filepath: str) -> pd.DataFrame:
     for enc in encodings:
         try:
             df = pd.read_csv(filepath, encoding=enc, low_memory=False)
-            print(f"✅ Archivo leído exitosamente con encoding: {enc}")
+            print(f"Archivo leído exitosamente con encoding: {enc}")
             break
         except Exception as e:
             continue
     
     if df is None:
-        raise ValueError(f"❌ No se pudo leer el archivo con ningún encoding probado: {encodings}")
+        raise ValueError(f"No se pudo leer el archivo con ningún encoding probado: {encodings}")
     
     print(f"   • Filas leídas: {len(df):,}")
     print(f"   • Columnas: {list(df.columns)}")
@@ -152,7 +152,7 @@ def read_ejecucion(filepath: str) -> pd.DataFrame:
         monto_col = next((c for c in df.columns if "MONTO" in c), None)
     
     if not all([year_col, month_col, dept_col, monto_col]):
-        raise ValueError(f"❌ No se encontraron todas las columnas necesarias en ejecución presupuestal")
+        raise ValueError(f"No se encontraron todas las columnas necesarias en ejecución presupuestal")
     
     print(f"   • Columnas detectadas: AÑO={year_col}, MES={month_col}, DPTO={dept_col}, MONTO={monto_col}")
     
@@ -209,22 +209,22 @@ def load_data(data_dir: str = "../data/raw") -> Tuple[pd.DataFrame, pd.DataFrame
     ejecucion_file = next(data_path.glob("*Ejecu_Presup*.csv"), None)
     
     if not denuncias_file:
-        raise FileNotFoundError(f"❌ No se encontró archivo de denuncias en {data_dir}")
+        raise FileNotFoundError(f"No se encontró archivo de denuncias en {data_dir}")
     if not ejecucion_file:
-        raise FileNotFoundError(f"❌ No se encontró archivo de ejecución presupuestal en {data_dir}")
+        raise FileNotFoundError(f"No se encontró archivo de ejecución presupuestal en {data_dir}")
     
     print("="*80)
-    print(" "*25 + "🚀 INICIANDO CARGA DE DATOS")
+    print(" "*25 + "INICIANDO CARGA DE DATOS")
     print("="*80)
-    print(f"📂 Directorio: {data_path.absolute()}")
-    print(f"📄 Denuncias: {denuncias_file.name}")
-    print(f"📄 Ejecución: {ejecucion_file.name}")
+    print(f"Directorio: {data_path.absolute()}")
+    print(f"Denuncias: {denuncias_file.name}")
+    print(f"Ejecución: {ejecucion_file.name}")
     
     df_denuncias = read_denuncias(str(denuncias_file))
     df_ejecucion = read_ejecucion(str(ejecucion_file))
     
     print("\n" + "="*80)
-    print(" "*30 + "✅ CARGA COMPLETADA")
+    print(" "*30 + "CARGA COMPLETADA")
     print("="*80)
     
     return df_denuncias, df_ejecucion
@@ -233,5 +233,5 @@ def load_data(data_dir: str = "../data/raw") -> Tuple[pd.DataFrame, pd.DataFrame
 if __name__ == "__main__":
     # Prueba del módulo
     df_den, df_eje = load_data("../data/raw")
-    print("\n📊 Denuncias shape:", df_den.shape)
-    print("📊 Ejecución shape:", df_eje.shape)
+    print("\nDenuncias shape:", df_den.shape)
+    print("Ejecución shape:", df_eje.shape)

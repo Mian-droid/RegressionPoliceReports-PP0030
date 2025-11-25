@@ -6,8 +6,8 @@ SCRIPT PRINCIPAL: PIPELINE COMPLETO DE REGRESIÓN
 Orquesta todo el pipeline usando los módulos modularizados:
 ✅ entrada.py: Carga de datos raw
 ✅ preprocesamiento.py: Limpieza y validación
-✅ PROCESAMIENTO: Creación de panel y features
-✅ SALIDA: Entrenamiento, evaluación y guardado
+✅ procesamiento.py: Creación de panel y features
+✅ salida.py: Entrenamiento, evaluación y guardado
 
 Ejecutar: python notebooks\main.py
 ===================================================================================
@@ -24,11 +24,11 @@ from sklearn.linear_model import RidgeCV
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import joblib
 
-# Importar módulos propios
+# Módulos propios
 from entrada import load_data
 from preprocesamiento import clean_denuncias, clean_ejecucion, generate_cleaning_report, save_clean_data
 from procesamiento import evaluar_modelos_cv
-from salida import evaluar_modelo_elegido # Importación del módulo de salida
+from salida import evaluar_modelo_elegido
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = ROOT / "models"
@@ -52,10 +52,10 @@ def make_panel(den, ejec):
         DataFrame con panel balanceado
     """
     print("\n" + "="*80)
-    print(" "*25 + "📊 CREACIÓN DE PANEL BALANCEADO")
+    print(" "*25 + "CREACIÓN DE PANEL BALANCEADO")
     print("="*80)
     
-    # outer join to preserve months with zero events
+    # outer join para preservar meses con 0 eventos
     df = pd.merge(den, ejec, on=["DEPARTAMENTO", "period"], how="outer")
     
     # Definir rango temporal común: desde 2019-01 (inicio del dataset de ejecución)
@@ -105,7 +105,7 @@ def create_features(df, lags=(1, 2, 3)):
         DataFrame con features creados
     """
     print("\n" + "="*80)
-    print(" "*28 + "🔧 INGENIERÍA DE FEATURES")
+    print(" "*28 + "INGENIERÍA DE FEATURES")
     print("="*80)
     
     df = df.copy()
@@ -141,17 +141,16 @@ def main():
     Ejecuta el pipeline completo.
     """
     print("\n" + "="*80)
-    print(" "*20 + "🚀 PIPELINE DE REGRESIÓN: DENUNCIAS vs PP0030")
+    print(" "*20 + "PIPELINE DE REGRESIÓN: DENUNCIAS vs PP0030")
     print("="*80)
     
     # PASO 1: ENTRADA - Cargar datos raw
-    print("\n📥 PASO 1/5: CARGA DE DATOS")
-    # Nota: asumiendo que este script se corre desde notebooks/
+    print("\nPASO 1/5: CARGA DE DATOS")
     data_dir = ROOT / "data" / "raw"
     df_den_raw, df_eje_raw = load_data(str(data_dir))
     
     # PASO 2: PREPROCESAMIENTO - Limpiar datos
-    print("\n🧹 PASO 2/5: LIMPIEZA DE DATOS")
+    print("\nPASO 2/5: LIMPIEZA DE DATOS")
     df_den_clean = clean_denuncias(df_den_raw.copy())
     df_eje_clean = clean_ejecucion(df_eje_raw.copy())
     
@@ -163,15 +162,15 @@ def main():
     save_clean_data(df_den_clean, df_eje_clean, str(processed_dir))
     
     # PASO 3: PROCESAMIENTO - Crear panel balanceado y features
-    print("\n📊 PASO 3/5: CREACIÓN DE PANEL Y FEATURES")
+    print("\nPASO 3/5: CREACIÓN DE PANEL Y FEATURES")
     panel = make_panel(df_den_clean, df_eje_clean)
     df_features = create_features(panel)
     
     # PASO 4: MODELADO - Evaluación de modelos con CV
-    print("\n\n🤖 PASO 4/5: EVALUACIÓN DE MODELOS (K-FOLD CV)")
+    print("\n\nPASO 4/5: EVALUACIÓN DE MODELOS (K-FOLD CV)")
     resultados = evaluar_modelos_cv(df_features)
 
-    print("\n📊 Resultados de CV promedio por modelo:")
+    print("\nResultados de CV promedio por modelo:")
     cv_df = resultados["cv_results"]
     # Mostrar tabla resumida
     print(tabulate(cv_df[['model', 'mse_mean', 'mae_mean', 'r2_mean']].values, 
@@ -180,16 +179,15 @@ def main():
                    floatfmt=".4f"))
 
     # PASO 5: SALIDA - Evaluación final y diagnóstico gráfico
-    print("\n\n📈 PASO 5/5: EVALUACIÓN FINAL DEL MEJOR MODELO")
+    print("\n\n PASO 5/5: EVALUACIÓN FINAL DEL MEJOR MODELO")
     evaluar_modelo_elegido(resultados)
 
     print("\n" + "="*80)
     print(" "*30 + "✅ PIPELINE COMPLETADO")
     print("="*80)
-    print(f"\n📂 Archivos generados:")
+    print(f"\nArchivos generados:")
     print(f"   • data/processed/denuncias_clean.csv")
     print(f"   • data/processed/ejecucion_clean.csv")
-    print("\n📸 No olvides capturar todas las tablas y gráficos para tu informe final.")
     print("="*80)
 
 
