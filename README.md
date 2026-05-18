@@ -3,7 +3,7 @@
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto desarrolla un **modelo de regresión** para analizar la influencia de la **Ejecución Presupuestal del Programa Presupuestal PP0030** en la **variación de la Tasa de Denuncias Policiales** en Perú.
+Este proyecto desarrolla un **modelo de regresión** para analizar la influencia de la **Ejecución Presupuestal del Programa Presupuestal PP0030** sobre la **Tasa de Denuncias Policiales** en Perú.
 
 ### Objetivo
 Determinar si existe una relación estadísticamente significativa entre:
@@ -37,9 +37,9 @@ py -3.11 -m venv .venv
 # Instalar dependencias
 pip install -r requirements.txt
 
-### 2. Ejecutar Pipeline de Limpieza
+### 2. Ejecutar proyecto
 
-python notebooks/exploratory_regression.py
+python notebooks/main.py
 
 ## 📁 Estructura del Proyecto
 
@@ -55,24 +55,25 @@ RegressionPoliceReports-PP0030/
 │       ├── denuncias_clean.csv
 │       └── ejecucion_clean.csv
 │
-├── notebooks/
-│   └── exploratory_regression.py    # Pipeline principal de limpieza y modelado
-│
 ├── models/
 │   └── ridge_baseline.joblib        # Modelo entrenado (generado automáticamente)
+|
+├── notebooks/
+|   ├── main.py    # Pipeline principal
+│   └── ...        # Módulos auxiliares
+│
+├── screenshots/                     # Capturas de pantalla de los gráficos resultantes
 │
 ├── requirements.txt                  # Dependencias Python (pip)
-├── environment.yml                   # Dependencias Conda (alternativa)
-├── INSTALL_WINDOWS.md               # Guía de instalación detallada para Windows
 └── README.md                         # Este archivo
 ```
-
 
 ## 🤖 Modelado
 
 ### Features Creados
 - **Lags temporales:** MONTO_LAG_1, MONTO_LAG_2, MONTO_LAG_3 (montos devengados en meses anteriores)
 - **Features temporales:** month (mes del año), year (año)
+- **y (target):** Logaritmo + 1 de cantidad de denuncias, con el fin de estabilizar la varianza
 
 ### Modelo Baseline
 - **Algoritmo:** Ridge Regression con validación cruzada (RidgeCV)
@@ -80,6 +81,43 @@ RegressionPoliceReports-PP0030/
 - **Validación:** Split temporal (últimos 6 meses como test set)
 - **Métricas:** RMSE, MAE, R²
  
+## 🔧 Tareas realizadas
+- Integración de datasets de denuncias policiales y ejecución presupuestal PP0030 (2019–2025).
+- Limpieza y normalización de datos, eliminación de outliers, alineación temporal y creación de rezagos (lags).
+- Entrenamiento y validación con 10-fold cross-validation.
+- Comparación de cinco modelos de regresión: Ridge, Lasso, ElasticNet, KNN y Decision Tree.
+
+## 📈 Resultados
+
+### Comparación de modelos
+
+| Modelo       | MSE (Mean) | MAE (Mean) | R² (Mean) |
+|--------------|------------|------------|-----------|
+| **KNN**      | 0.2755     | 0.3963     | 0.6863    |
+| DecisionTree | 0.3846     | 0.4591     | 0.5582    |
+| ElasticNet   | 0.5037     | 0.5762     | 0.4260    |
+| Ridge        | 0.5055     | 0.5701     | 0.4245    |
+| Lasso        | 0.5107     | 0.5830     | 0.4182    |
+
+
+- El modelo **K-Nearest Neighbors (KNN)** obtuvo el mejor desempeño:
+  - MSE = 0.2755  
+  - MAE = 0.3963  
+  - R² ≈ 0.69
+- Se identificó una relación **no lineal** entre ejecución presupuestal y denuncias.
+- Factores de tendencia y estacionalidad (año y mes) también influyen en la variación del delito.
+
+### Gráfica Real vs Predicción (KNN)
+![Gráfica](./screenshots/Figure_1.png)
+
+Se observa una proporción relativamente lineal entre lo predicho y lo obtenido, para el log1p de número de denuncias. Sin embargo, una cantidad considerable de valores se alejan de la diagonal. Esto corresponde con el valor de R^2, de 0.6863, el cual indica una capacidad predictiva razonable, mas no perfecta.
+
+
+## ✅ Conclusión
+El objetivo de analizar la influencia del PP0030 sobre la tasa de denuncias se cumplió.  
+La hipótesis de una relación lineal fue **parcialmente refutada**: el vínculo es más complejo y depende de patrones históricos y contextuales. 
+Los modelos lineales evaluados (Lasso, Ridge y ElasticNet) no evidenciaron una relación proporcional clara, indicando que el vínculo entre presupuesto y denuncias no responde a una dinámica lineal.
+El modelo KNN demostró ser adecuado, aunque se recomienda incorporar variables socioeconómicas y algoritmos más complejos en futuros trabajos.
 
 ## 📈 Próximos Pasos
 
@@ -95,13 +133,13 @@ RegressionPoliceReports-PP0030/
 
 ## 👥 Equipo
 
-Este proyecto es desarrollado como parte de un trabajo de análisis de Inteligencia Artificial aplicada a datos gubernamentales.
+Este proyecto es desarrollado como parte de un trabajo de análisis del curso Inteligencia Artificial (1INF24).
 
-LUYO DAGA, MIGUEL ANGEL
-RODRIGUEZ ALMORA, AMIRA PAOLA
-RAYMUNDO MOREYRA, PIERO EDUARDO
-ARAGON VILCA, RODRIGO RAYHAN JEREMY
-YABAR REAÑO, SAID SANTIAGO
+- ARAGON VILCA, RODRIGO RAYHAN JEREMY
+- LUYO DAGA, MIGUEL ANGEL
+- RAYMUNDO MOREYRA, PIERO EDUARDO
+- RODRIGUEZ ALMORA, AMIRA PAOLA
+- YABAR REAÑO, SANTIAGO
 
 ## 📝 Notas
 
@@ -110,4 +148,4 @@ YABAR REAÑO, SAID SANTIAGO
 - **Modelo versionable:** El archivo `.joblib` permite versionar y comparar diferentes iteraciones del modelo.
 
 
-**Última actualización:** Octubre 2025
+**Última actualización principal:** Noviembre 2025
