@@ -63,9 +63,9 @@ RegressionPoliceReports-PP0030/
 │   └── ...        # Módulos auxiliares
 │
 ├── screenshots/                     # Capturas de pantalla de los gráficos resultantes
-│
-├── requirements.txt                  # Dependencias Python (pip)
-└── README.md                         # Este archivo
+│── JUSTIFICACION_AGREGACION_DATOS.md # Documento de justificación de agregación de los datos
+├── README.md                         # Este archivo
+└── requirements.txt                  # Dependencias Python (pip)
 ```
 
 ## 🤖 Modelado
